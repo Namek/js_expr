@@ -59,11 +59,7 @@ SourceCharacter
 
 WhiteSpace "whitespace"
   = "\t"
-  / "\v"
-  / "\f"
   / " "
-  / "\u00A0"
-  / "\uFEFF"
 
 Identifier
   = !CommonReservedWord name:IdentifierName { return name; }
@@ -82,8 +78,6 @@ IdentifierStart
 
 IdentifierPart
   = IdentifierStart
-  / "\u200C"
-  / "\u200D"
 
 CommonReservedWord
   = ThisToken
