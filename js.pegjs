@@ -86,10 +86,7 @@ IdentifierPart
   / "\u200D"
 
 CommonReservedWord
-  = DefaultToken
-  / NewToken
-  / ThisToken
-  / ClassToken
+  = ThisToken
   / NullLiteral
   / BooleanLiteral
 
@@ -180,13 +177,9 @@ EscapeCharacter
 
 /* Tokens */
 
-ClassToken      = "class"      !IdentifierPart
-DebuggerToken   = "debugger"   !IdentifierPart
-DefaultToken    = "default"    !IdentifierPart
 FalseToken      = "false"      !IdentifierPart
 InstanceofToken = "instanceof" !IdentifierPart
 InToken         = "in"         !IdentifierPart
-NewToken        = "new"        !IdentifierPart
 NullToken       = "null"       !IdentifierPart
 ThisToken       = "this"       !IdentifierPart
 TrueToken       = "true"       !IdentifierPart
@@ -203,11 +196,6 @@ PrimaryExpression
   / Identifier
   / Literal
   / "(" _ expression:Expression _ ")" { return expression; }
-
-PropertyName
-  = IdentifierName
-  / StringLiteral
-  / NumericLiteral
 
 MemberExpression
   = first:(
@@ -319,7 +307,6 @@ Expression
 
 Statement
   = ExpressionStatement
-  / DebuggerStatement
 
 ExpressionStatement
   = !("{") expression:Expression {
@@ -328,9 +315,6 @@ ExpressionStatement
         expression: expression
       };
     }
-
-DebuggerStatement
-  = DebuggerToken { return { type: "DebuggerStatement" }; }
 
 /* ----- A.4 Functions and Programs ----- */
 
