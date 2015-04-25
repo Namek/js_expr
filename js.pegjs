@@ -337,11 +337,6 @@ PrimaryExpression
   / Literal
   / "(" __ expression:Expression __ ")" { return expression; }
 
-PropertyAssignment
-  = key:PropertyName __ ":" __ value:AssignmentExpression {
-      return { key: key, value: value, kind: "init" };
-    }
-
 PropertyName
   = IdentifierName
   / StringLiteral
@@ -385,7 +380,7 @@ Arguments
     }
 
 ArgumentList
-  = first:AssignmentExpression rest:(__ "," __ AssignmentExpression)* {
+  = first:ConditionalExpression rest:(__ "," __ ConditionalExpression)* {
       return buildList(first, rest, 3);
     }
 
@@ -531,8 +526,8 @@ LogicalOROperator
 
 ConditionalExpression
   = test:LogicalORExpression __
-    "?" __ consequent:AssignmentExpression __
-    ":" __ alternate:AssignmentExpression
+    "?" __ consequent:ConditionalExpression __
+    ":" __ alternate:ConditionalExpression
     {
       return {
         type:       "ConditionalExpression",
@@ -543,46 +538,8 @@ ConditionalExpression
     }
   / LogicalORExpression
 
-AssignmentExpression
-  = left:LeftHandSideExpression __
-    "=" !"=" __
-    right:AssignmentExpression
-    {
-      return {
-        type:     "AssignmentExpression",
-        operator: "=",
-        left:     left,
-        right:    right
-      };
-    }
-  / left:LeftHandSideExpression __
-    operator:AssignmentOperator __
-    right:AssignmentExpression
-    {
-      return {
-        type:     "AssignmentExpression",
-        operator: operator,
-        left:     left,
-        right:    right
-      };
-    }
-  / ConditionalExpression
-
-AssignmentOperator
-  = "*="
-  / "/="
-  / "%="
-  / "+="
-  / "-="
-  / "<<="
-  / ">>="
-  / ">>>="
-  / "&="
-  / "^="
-  / "|="
-
 Expression
-  = first:AssignmentExpression rest:(__ "," __ AssignmentExpression)* {
+  = first:ConditionalExpression rest:(__ "," __ ConditionalExpression)* {
       return rest.length > 0
         ? { type: "SequenceExpression", expressions: buildList(first, rest, 3) }
         : first;
