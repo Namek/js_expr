@@ -215,39 +215,17 @@ EscapeCharacter
 
 /* Tokens */
 
-BreakToken      = "break"      !IdentifierPart
-CaseToken       = "case"       !IdentifierPart
 ClassToken      = "class"      !IdentifierPart
-ConstToken      = "const"      !IdentifierPart
-ContinueToken   = "continue"   !IdentifierPart
 DebuggerToken   = "debugger"   !IdentifierPart
 DefaultToken    = "default"    !IdentifierPart
-DoToken         = "do"         !IdentifierPart
-ElseToken       = "else"       !IdentifierPart
-EnumToken       = "enum"       !IdentifierPart
-ExportToken     = "export"     !IdentifierPart
-ExtendsToken    = "extends"    !IdentifierPart
 FalseToken      = "false"      !IdentifierPart
-ForToken        = "for"        !IdentifierPart
 FunctionToken   = "function"   !IdentifierPart
-IfToken         = "if"         !IdentifierPart
-ImportToken     = "import"     !IdentifierPart
 InstanceofToken = "instanceof" !IdentifierPart
 InToken         = "in"         !IdentifierPart
 NewToken        = "new"        !IdentifierPart
 NullToken       = "null"       !IdentifierPart
-ReturnToken     = "return"     !IdentifierPart
-SuperToken      = "super"      !IdentifierPart
-SwitchToken     = "switch"     !IdentifierPart
 ThisToken       = "this"       !IdentifierPart
-ThrowToken      = "throw"      !IdentifierPart
 TrueToken       = "true"       !IdentifierPart
-TryToken        = "try"        !IdentifierPart
-TypeofToken     = "typeof"     !IdentifierPart
-VarToken        = "var"        !IdentifierPart
-VoidToken       = "void"       !IdentifierPart
-WhileToken      = "while"      !IdentifierPart
-WithToken       = "with"       !IdentifierPart
 
 /* Skipped */
 
