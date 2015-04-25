@@ -385,53 +385,11 @@ ArgumentList
     }
 
 LeftHandSideExpression
-  = //CallExpression
-  / NewExpression
-
-PostfixExpression
-  = argument:LeftHandSideExpression _ operator:PostfixOperator {
-      return {
-        type:     "UpdateExpression",
-        operator: operator,
-        argument: argument,
-        prefix:   false
-      };
-    }
-  / LeftHandSideExpression
-
-PostfixOperator
-  = "++"
-  / "--"
-
-UnaryExpression
-  = PostfixExpression
-  / operator:UnaryOperator __ argument:UnaryExpression {
-      var type = (operator === "++" || operator === "--")
-        ? "UpdateExpression"
-        : "UnaryExpression";
-
-      return {
-        type:     type,
-        operator: operator,
-        argument: argument,
-        prefix:   true
-      };
-    }
-
-UnaryOperator
-  = //$DeleteToken
-  / $VoidToken
-  / $TypeofToken
-  / "++"
-  / "--"
-  / $("+" !"=")
-  / $("-" !"=")
-  / "~"
-  / "!"
+  = NewExpression
 
 MultiplicativeExpression
-  = first:UnaryExpression
-    rest:(__ MultiplicativeOperator __ UnaryExpression)*
+  = first:LeftHandSideExpression
+    rest:(__ MultiplicativeOperator __ LeftHandSideExpression)*
     { return buildBinaryExpression(first, rest); }
 
 MultiplicativeOperator
