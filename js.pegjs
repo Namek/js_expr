@@ -147,7 +147,6 @@ SingleStringCharacter
 /* Tokens */
 
 FalseToken      = "false"      !IdentifierPart
-InstanceofToken = "instanceof" !IdentifierPart
 InToken         = "in"         !IdentifierPart
 NullToken       = "null"       !IdentifierPart
 ThisToken       = "this"       !IdentifierPart
@@ -221,7 +220,6 @@ RelationalOperator
   / ">="
   / $("<" !"<")
   / $(">" !">")
-  / $InstanceofToken
   / $InToken
 
 EqualityExpression
