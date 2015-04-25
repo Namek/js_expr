@@ -14,7 +14,7 @@ var Path = {
 
 gulp.task('peg', ['clean'], function() {
 	var pegOpts = {
-		exportVar: 'nd.exprParser',
+		// exportVar: 'nd.exprParser',
 		optimize: 'size'
 	};
 	return gulp.src(Path.input)
@@ -35,4 +35,27 @@ gulp.task('watch', ['peg'], function() {
 	});
 });
 
+gulp.task('watch-test', ['peg'], function() {
+	watch(Path.input, { verbose: true }, function() {
+		gulp.run('test');
+	});
+});
+
 gulp.task('default', ['peg']);
+
+gulp.task('peg-test', ['peg'], function() {
+	gulp.run('test');
+});
+
+gulp.task('test', ['peg'], function(cb) {
+	var fs = require('fs'), filepath = 'test/sample_code.js';
+	fs.readFile(filepath, 'utf8', function(err, testCode) {
+		if (err) throw err;
+		gutil.log("input - test code:\n\n" + testCode + "\n");
+
+		var parser = require('./js.js');
+		gutil.log("output - Abstract Syntax Tree:\n\n" + JSON.stringify(parser.parse(testCode), null, 2));
+
+		cb();
+	});
+});
