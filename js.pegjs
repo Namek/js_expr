@@ -50,7 +50,7 @@
 }
 
 Start
-  = _ program:Program _ { return program; }
+  = _ program:Expression _ { return program; }
 
 /* ----- A.1 Lexical Grammar ----- */
 
@@ -269,34 +269,3 @@ Expression
         ? { type: "SequenceExpression", expressions: buildList(first, rest, 3) }
         : first;
     }
-
-/* ----- A.3 Statements ----- */
-
-Statement
-  = ExpressionStatement
-
-ExpressionStatement
-  = !("{") expression:Expression {
-      return {
-        type:       "ExpressionStatement",
-        expression: expression
-      };
-    }
-
-/* ----- A.4 Functions and Programs ----- */
-
-Program
-  = body:SourceElements? {
-      return {
-        type: "Program",
-        body: optionalList(body)
-      };
-    }
-
-SourceElements
-  = first:SourceElement rest:(_ SourceElement)* {
-      return buildList(first, rest, 1);
-    }
-
-SourceElement
-  = Statement
