@@ -330,19 +330,9 @@ AdditiveOperator
   = $("+" ![+=])
   / $("-" ![-=])
 
-ShiftExpression
-  = first:AdditiveExpression
-    rest:(__ ShiftOperator __ AdditiveExpression)*
-    { return buildBinaryExpression(first, rest); }
-
-ShiftOperator
-  = $("<<"  !"=")
-  / $(">>>" !"=")
-  / $(">>"  !"=")
-
 RelationalExpression
-  = first:ShiftExpression
-    rest:(__ RelationalOperator __ ShiftExpression)*
+  = first:AdditiveExpression
+    rest:(__ RelationalOperator __ AdditiveExpression)*
     { return buildBinaryExpression(first, rest); }
 
 RelationalOperator
@@ -352,7 +342,6 @@ RelationalOperator
   / $(">" !">")
   / $InstanceofToken
   / $InToken
-
 
 EqualityExpression
   = first:RelationalExpression
@@ -365,33 +354,9 @@ EqualityOperator
   / "=="
   / "!="
 
-BitwiseANDExpression
-  = first:EqualityExpression
-    rest:(__ BitwiseANDOperator __ EqualityExpression)*
-    { return buildBinaryExpression(first, rest); }
-
-BitwiseANDOperator
-  = $("&" ![&=])
-
-BitwiseXORExpression
-  = first:BitwiseANDExpression
-    rest:(__ BitwiseXOROperator __ BitwiseANDExpression)*
-    { return buildBinaryExpression(first, rest); }
-
-BitwiseXOROperator
-  = $("^" !"=")
-
-BitwiseORExpression
-  = first:BitwiseXORExpression
-    rest:(__ BitwiseOROperator __ BitwiseXORExpression)*
-    { return buildBinaryExpression(first, rest); }
-
-BitwiseOROperator
-  = $("|" ![|=])
-
 LogicalANDExpression
-  = first:BitwiseORExpression
-    rest:(__ LogicalANDOperator __ BitwiseORExpression)*
+  = first:EqualityExpression
+    rest:(__ LogicalANDOperator __ EqualityExpression)*
     { return buildBinaryExpression(first, rest); }
 
 LogicalANDOperator
@@ -401,7 +366,6 @@ LogicalORExpression
   = first:LogicalANDExpression
     rest:(__ LogicalOROperator __ LogicalANDExpression)*
     { return buildBinaryExpression(first, rest); }
-
 
 LogicalOROperator
   = "||"
@@ -426,7 +390,6 @@ Expression
         ? { type: "SequenceExpression", expressions: buildList(first, rest, 3) }
         : first;
     }
-
 
 /* ----- A.4 Statements ----- */
 
