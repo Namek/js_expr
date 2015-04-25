@@ -212,25 +212,11 @@ ThisToken       = "this"       !IdentifierPart
 TrueToken       = "true"       !IdentifierPart
 
 /* Skipped */
-
 _
   = (WhiteSpace)*
 
-/* Automatic Semicolon Insertion */
 
-EOS
-  = _ ";"
-  / _ &"}"
-  / _ EOF
-
-EOF
-  = !.
-
-/* ----- A.2 Number Conversions ----- */
-
-/* Irrelevant. */
-
-/* ----- A.3 Expressions ----- */
+/* ----- A.2 Expressions ----- */
 
 PrimaryExpression
   = ThisToken { return { type: "ThisExpression" }; }
@@ -349,14 +335,14 @@ Expression
         : first;
     }
 
-/* ----- A.4 Statements ----- */
+/* ----- A.3 Statements ----- */
 
 Statement
   = ExpressionStatement
   / DebuggerStatement
 
 ExpressionStatement
-  = !("{") expression:Expression EOS {
+  = !("{") expression:Expression {
       return {
         type:       "ExpressionStatement",
         expression: expression
@@ -364,9 +350,9 @@ ExpressionStatement
     }
 
 DebuggerStatement
-  = DebuggerToken EOS { return { type: "DebuggerStatement" }; }
+  = DebuggerToken { return { type: "DebuggerStatement" }; }
 
-/* ----- A.5 Functions and Programs ----- */
+/* ----- A.4 Functions and Programs ----- */
 
 Program
   = body:SourceElements? {
@@ -383,15 +369,3 @@ SourceElements
 
 SourceElement
   = Statement
-
-/* ----- A.6 Universal Resource Identifier Character Classes ----- */
-
-/* Irrelevant. */
-
-/* ----- A.7 Regular Expressions ----- */
-
-/* Irrelevant. */
-
-/* ----- A.8 JSON ----- */
-
-/* Irrelevant. */
