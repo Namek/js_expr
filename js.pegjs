@@ -108,24 +108,21 @@ BooleanLiteral
 
 /*
  * The "!(IdentifierStart / DecimalDigit)" predicate is not part of the official
- * grammar, it comes from text in section 7.8.3.
+ * grammar.
  */
 NumericLiteral "number"
-  = literal:HexIntegerLiteral !(IdentifierStart / DecimalDigit) {
-      return literal;
-    }
-  / literal:DecimalLiteral !(IdentifierStart / DecimalDigit) {
+  = literal:DecimalLiteral !(IdentifierStart / DecimalDigit) {
       return literal;
     }
 
 DecimalLiteral
-  = DecimalIntegerLiteral "." DecimalDigit* ExponentPart? {
+  = DecimalIntegerLiteral "." DecimalDigit* {
       return { type: "Literal", value: parseFloat(text()) };
     }
-  / "." DecimalDigit+ ExponentPart? {
+  / "." DecimalDigit+ {
       return { type: "Literal", value: parseFloat(text()) };
     }
-  / DecimalIntegerLiteral ExponentPart? {
+  / DecimalIntegerLiteral {
       return { type: "Literal", value: parseFloat(text()) };
     }
 
@@ -138,23 +135,6 @@ DecimalDigit
 
 NonZeroDigit
   = [1-9]
-
-ExponentPart
-  = ExponentIndicator SignedInteger
-
-ExponentIndicator
-  = "e"i
-
-SignedInteger
-  = [+-]? DecimalDigit+
-
-HexIntegerLiteral
-  = "0x"i digits:$HexDigit+ {
-      return { type: "Literal", value: parseInt(digits, 16) };
-     }
-
-HexDigit
-  = [0-9a-f]i
 
 StringLiteral "string"
   = '"' chars:DoubleStringCharacter* '"' {
