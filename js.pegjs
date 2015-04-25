@@ -345,9 +345,6 @@ PropertyName
 MemberExpression
   = first:(
         PrimaryExpression
-      / NewToken __ callee:MemberExpression __ args:Arguments {
-          return { type: "NewExpression", callee: callee, arguments: args };
-        }
     )
     rest:(
         __ "[" __ property:Expression __ "]" {
@@ -368,24 +365,8 @@ MemberExpression
       });
     }
 
-NewExpression
-  = MemberExpression
-  / NewToken __ callee:NewExpression {
-      return { type: "NewExpression", callee: callee, arguments: [] };
-    }
-
-Arguments
-  = "(" __ args:(ArgumentList __)? ")" {
-      return optionalList(extractOptional(args, 0));
-    }
-
-ArgumentList
-  = first:ConditionalExpression rest:(__ "," __ ConditionalExpression)* {
-      return buildList(first, rest, 3);
-    }
-
 LeftHandSideExpression
-  = NewExpression
+  = MemberExpression
 
 MultiplicativeExpression
   = first:LeftHandSideExpression
