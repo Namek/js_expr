@@ -50,7 +50,7 @@
 }
 
 Start
-  = __ program:Program __ { return program; }
+  = _ program:Program _ { return program; }
 
 /* ----- A.1 Lexical Grammar ----- */
 
@@ -64,16 +64,6 @@ WhiteSpace "whitespace"
   / " "
   / "\u00A0"
   / "\uFEFF"
-
-LineTerminator
-  = [\n\r\u2028\u2029]
-
-LineTerminatorSequence "end of line"
-  = "\n"
-  / "\r\n"
-  / "\r"
-  / "\u2028"
-  / "\u2029"
 
 Identifier
   = !CommonReservedWord name:IdentifierName { return name; }
@@ -175,17 +165,12 @@ StringLiteral "string"
     }
 
 DoubleStringCharacter
-  = !('"' / "\\" / LineTerminator) SourceCharacter { return text(); }
+  = !('"' / "\\") SourceCharacter { return text(); }
   / "\\" sequence:EscapeSequence { return sequence; }
-  / LineContinuation
 
 SingleStringCharacter
-  = !("'" / "\\" / LineTerminator) SourceCharacter { return text(); }
+  = !("'" / "\\") SourceCharacter { return text(); }
   / "\\" sequence:EscapeSequence { return sequence; }
-  / LineContinuation
-
-LineContinuation
-  = "\\" LineTerminatorSequence { return ""; }
 
 EscapeSequence
   = CharacterEscapeSequence
@@ -207,7 +192,7 @@ SingleEscapeCharacter
   / "v"  { return "\x0B"; }   // IE does not recognize "\v".
 
 NonEscapeCharacter
-  = !(EscapeCharacter / LineTerminator) SourceCharacter { return text(); }
+  = !EscapeCharacter SourceCharacter { return text(); }
 
 EscapeCharacter
   = SingleEscapeCharacter
@@ -219,7 +204,6 @@ ClassToken      = "class"      !IdentifierPart
 DebuggerToken   = "debugger"   !IdentifierPart
 DefaultToken    = "default"    !IdentifierPart
 FalseToken      = "false"      !IdentifierPart
-FunctionToken   = "function"   !IdentifierPart
 InstanceofToken = "instanceof" !IdentifierPart
 InToken         = "in"         !IdentifierPart
 NewToken        = "new"        !IdentifierPart
@@ -229,19 +213,15 @@ TrueToken       = "true"       !IdentifierPart
 
 /* Skipped */
 
-__
-  = (WhiteSpace / LineTerminatorSequence)*
-
 _
   = (WhiteSpace)*
 
 /* Automatic Semicolon Insertion */
 
 EOS
-  = __ ";"
-  / _ LineTerminatorSequence
+  = _ ";"
   / _ &"}"
-  / __ EOF
+  / _ EOF
 
 EOF
   = !.
@@ -256,7 +236,7 @@ PrimaryExpression
   = ThisToken { return { type: "ThisExpression" }; }
   / Identifier
   / Literal
-  / "(" __ expression:Expression __ ")" { return expression; }
+  / "(" _ expression:Expression _ ")" { return expression; }
 
 PropertyName
   = IdentifierName
@@ -268,10 +248,10 @@ MemberExpression
         PrimaryExpression
     )
     rest:(
-        __ "[" __ property:Expression __ "]" {
+        _ "[" _ property:Expression _ "]" {
           return { property: property, computed: true };
         }
-      / __ "." __ property:IdentifierName {
+      / _ "." _ property:IdentifierName {
           return { property: property, computed: false };
         }
     )*
@@ -291,7 +271,7 @@ LeftHandSideExpression
 
 MultiplicativeExpression
   = first:LeftHandSideExpression
-    rest:(__ MultiplicativeOperator __ LeftHandSideExpression)*
+    rest:(_ MultiplicativeOperator _ LeftHandSideExpression)*
     { return buildBinaryExpression(first, rest); }
 
 MultiplicativeOperator
@@ -301,7 +281,7 @@ MultiplicativeOperator
 
 AdditiveExpression
   = first:MultiplicativeExpression
-    rest:(__ AdditiveOperator __ MultiplicativeExpression)*
+    rest:(_ AdditiveOperator _ MultiplicativeExpression)*
     { return buildBinaryExpression(first, rest); }
 
 AdditiveOperator
@@ -310,7 +290,7 @@ AdditiveOperator
 
 RelationalExpression
   = first:AdditiveExpression
-    rest:(__ RelationalOperator __ AdditiveExpression)*
+    rest:(_ RelationalOperator _ AdditiveExpression)*
     { return buildBinaryExpression(first, rest); }
 
 RelationalOperator
@@ -323,7 +303,7 @@ RelationalOperator
 
 EqualityExpression
   = first:RelationalExpression
-    rest:(__ EqualityOperator __ RelationalExpression)*
+    rest:(_ EqualityOperator _ RelationalExpression)*
     { return buildBinaryExpression(first, rest); }
 
 EqualityOperator
@@ -334,7 +314,7 @@ EqualityOperator
 
 LogicalANDExpression
   = first:EqualityExpression
-    rest:(__ LogicalANDOperator __ EqualityExpression)*
+    rest:(_ LogicalANDOperator _ EqualityExpression)*
     { return buildBinaryExpression(first, rest); }
 
 LogicalANDOperator
@@ -342,16 +322,16 @@ LogicalANDOperator
 
 LogicalORExpression
   = first:LogicalANDExpression
-    rest:(__ LogicalOROperator __ LogicalANDExpression)*
+    rest:(_ LogicalOROperator _ LogicalANDExpression)*
     { return buildBinaryExpression(first, rest); }
 
 LogicalOROperator
   = "||"
 
 ConditionalExpression
-  = test:LogicalORExpression __
-    "?" __ consequent:ConditionalExpression __
-    ":" __ alternate:ConditionalExpression
+  = test:LogicalORExpression _
+    "?" _ consequent:ConditionalExpression _
+    ":" _ alternate:ConditionalExpression
     {
       return {
         type:       "ConditionalExpression",
@@ -363,7 +343,7 @@ ConditionalExpression
   / LogicalORExpression
 
 Expression
-  = first:ConditionalExpression rest:(__ "," __ ConditionalExpression)* {
+  = first:ConditionalExpression rest:(_ "," _ ConditionalExpression)* {
       return rest.length > 0
         ? { type: "SequenceExpression", expressions: buildList(first, rest, 3) }
         : first;
@@ -376,7 +356,7 @@ Statement
   / DebuggerStatement
 
 ExpressionStatement
-  = !("{" / FunctionToken) expression:Expression EOS {
+  = !("{") expression:Expression EOS {
       return {
         type:       "ExpressionStatement",
         expression: expression
@@ -397,7 +377,7 @@ Program
     }
 
 SourceElements
-  = first:SourceElement rest:(__ SourceElement)* {
+  = first:SourceElement rest:(_ SourceElement)* {
       return buildList(first, rest, 1);
     }
 
