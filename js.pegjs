@@ -347,9 +347,6 @@ PropertyName
   / StringLiteral
   / NumericLiteral
 
-PropertySetParameterList
-  = id:Identifier { return [id]; }
-
 MemberExpression
   = first:(
         PrimaryExpression
@@ -479,26 +476,10 @@ RelationalOperator
   / $InstanceofToken
   / $InToken
 
-RelationalExpressionNoIn
-  = first:ShiftExpression
-    rest:(__ RelationalOperatorNoIn __ ShiftExpression)*
-    { return buildBinaryExpression(first, rest); }
-
-RelationalOperatorNoIn
-  = "<="
-  / ">="
-  / $("<" !"<")
-  / $(">" !">")
-  / $InstanceofToken
 
 EqualityExpression
   = first:RelationalExpression
     rest:(__ EqualityOperator __ RelationalExpression)*
-    { return buildBinaryExpression(first, rest); }
-
-EqualityExpressionNoIn
-  = first:RelationalExpressionNoIn
-    rest:(__ EqualityOperator __ RelationalExpressionNoIn)*
     { return buildBinaryExpression(first, rest); }
 
 EqualityOperator
@@ -512,22 +493,12 @@ BitwiseANDExpression
     rest:(__ BitwiseANDOperator __ EqualityExpression)*
     { return buildBinaryExpression(first, rest); }
 
-BitwiseANDExpressionNoIn
-  = first:EqualityExpressionNoIn
-    rest:(__ BitwiseANDOperator __ EqualityExpressionNoIn)*
-    { return buildBinaryExpression(first, rest); }
-
 BitwiseANDOperator
   = $("&" ![&=])
 
 BitwiseXORExpression
   = first:BitwiseANDExpression
     rest:(__ BitwiseXOROperator __ BitwiseANDExpression)*
-    { return buildBinaryExpression(first, rest); }
-
-BitwiseXORExpressionNoIn
-  = first:BitwiseANDExpressionNoIn
-    rest:(__ BitwiseXOROperator __ BitwiseANDExpressionNoIn)*
     { return buildBinaryExpression(first, rest); }
 
 BitwiseXOROperator
@@ -538,22 +509,12 @@ BitwiseORExpression
     rest:(__ BitwiseOROperator __ BitwiseXORExpression)*
     { return buildBinaryExpression(first, rest); }
 
-BitwiseORExpressionNoIn
-  = first:BitwiseXORExpressionNoIn
-    rest:(__ BitwiseOROperator __ BitwiseXORExpressionNoIn)*
-    { return buildBinaryExpression(first, rest); }
-
 BitwiseOROperator
   = $("|" ![|=])
 
 LogicalANDExpression
   = first:BitwiseORExpression
     rest:(__ LogicalANDOperator __ BitwiseORExpression)*
-    { return buildBinaryExpression(first, rest); }
-
-LogicalANDExpressionNoIn
-  = first:BitwiseORExpressionNoIn
-    rest:(__ LogicalANDOperator __ BitwiseORExpressionNoIn)*
     { return buildBinaryExpression(first, rest); }
 
 LogicalANDOperator
@@ -564,10 +525,6 @@ LogicalORExpression
     rest:(__ LogicalOROperator __ LogicalANDExpression)*
     { return buildBinaryExpression(first, rest); }
 
-LogicalORExpressionNoIn
-  = first:LogicalANDExpressionNoIn
-    rest:(__ LogicalOROperator __ LogicalANDExpressionNoIn)*
-    { return buildBinaryExpression(first, rest); }
 
 LogicalOROperator
   = "||"
@@ -585,20 +542,6 @@ ConditionalExpression
       };
     }
   / LogicalORExpression
-
-ConditionalExpressionNoIn
-  = test:LogicalORExpressionNoIn __
-    "?" __ consequent:AssignmentExpression __
-    ":" __ alternate:AssignmentExpressionNoIn
-    {
-      return {
-        type:       "ConditionalExpression",
-        test:       test,
-        consequent: consequent,
-        alternate:  alternate
-      };
-    }
-  / LogicalORExpressionNoIn
 
 AssignmentExpression
   = left:LeftHandSideExpression __
@@ -625,31 +568,6 @@ AssignmentExpression
     }
   / ConditionalExpression
 
-AssignmentExpressionNoIn
-  = left:LeftHandSideExpression __
-    "=" !"=" __
-    right:AssignmentExpressionNoIn
-    {
-      return {
-        type:     "AssignmentExpression",
-        operator: "=",
-        left:     left,
-        right:    right
-      };
-    }
-  / left:LeftHandSideExpression __
-    operator:AssignmentOperator __
-    right:AssignmentExpressionNoIn
-    {
-      return {
-        type:     "AssignmentExpression",
-        operator: operator,
-        left:     left,
-        right:    right
-      };
-    }
-  / ConditionalExpressionNoIn
-
 AssignmentOperator
   = "*="
   / "/="
@@ -670,12 +588,6 @@ Expression
         : first;
     }
 
-ExpressionNoIn
-  = first:AssignmentExpressionNoIn rest:(__ "," __ AssignmentExpressionNoIn)* {
-      return rest.length > 0
-        ? { type: "SequenceExpression", expressions: buildList(first, rest, 3) }
-        : first;
-    }
 
 /* ----- A.4 Statements ----- */
 
