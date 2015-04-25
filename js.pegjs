@@ -116,9 +116,6 @@ DecimalLiteral
   = DecimalIntegerLiteral "." DecimalDigit* {
       return { type: "Literal", value: parseFloat(text()) };
     }
-  / "." DecimalDigit+ {
-      return { type: "Literal", value: parseFloat(text()) };
-    }
   / DecimalIntegerLiteral {
       return { type: "Literal", value: parseFloat(text()) };
     }
@@ -143,37 +140,9 @@ StringLiteral "string"
 
 DoubleStringCharacter
   = !('"' / "\\") SourceCharacter { return text(); }
-  / "\\" sequence:EscapeSequence { return sequence; }
 
 SingleStringCharacter
   = !("'" / "\\") SourceCharacter { return text(); }
-  / "\\" sequence:EscapeSequence { return sequence; }
-
-EscapeSequence
-  = CharacterEscapeSequence
-  / "0" !DecimalDigit { return "\0"; }
-
-CharacterEscapeSequence
-  = SingleEscapeCharacter
-  / NonEscapeCharacter
-
-SingleEscapeCharacter
-  = "'"
-  / '"'
-  / "\\"
-  / "b"  { return "\b";   }
-  / "f"  { return "\f";   }
-  / "n"  { return "\n";   }
-  / "r"  { return "\r";   }
-  / "t"  { return "\t";   }
-  / "v"  { return "\x0B"; }   // IE does not recognize "\v".
-
-NonEscapeCharacter
-  = !EscapeCharacter SourceCharacter { return text(); }
-
-EscapeCharacter
-  = SingleEscapeCharacter
-  / DecimalDigit
 
 /* Tokens */
 
