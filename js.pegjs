@@ -5,21 +5,6 @@
  */
 
 {
-  var TYPES_TO_PROPERTY_NAMES = {
-    CallExpression:   "callee",
-    MemberExpression: "object",
-  };
-
-  function filledArray(count, value) {
-    var result = new Array(count), i;
-
-    for (i = 0; i < count; i++) {
-      result[i] = value;
-    }
-
-    return result;
-  }
-
   function extractOptional(optional, index) {
     return optional ? optional[index] : null;
   }
@@ -52,17 +37,6 @@
     return buildTree(first, rest, function(result, element) {
       return {
         type:     "BinaryExpression",
-        operator: element[1],
-        left:     result,
-        right:    element[3]
-      };
-    });
-  }
-
-  function buildLogicalExpression(first, rest) {
-    return buildTree(first, rest, function(result, element) {
-      return {
-        type:     "LogicalExpression",
         operator: element[1],
         left:     result,
         right:    element[3]
