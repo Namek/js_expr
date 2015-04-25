@@ -61,6 +61,10 @@ WhiteSpace "whitespace"
   = "\t"
   / " "
 
+LowercaseLetter = [a-z]
+UppercaseLetter = [A-Z]
+Digit = [0-9]
+
 Identifier
   = !CommonReservedWord name:IdentifierName { return name; }
 
@@ -73,11 +77,14 @@ IdentifierName "identifier"
     }
 
 IdentifierStart
-  = "$"
+  = LowercaseLetter
+  / UppercaseLetter
+  / "$"
   / "_"
 
 IdentifierPart
   = IdentifierStart
+  / Digit
 
 CommonReservedWord
   = ThisToken
