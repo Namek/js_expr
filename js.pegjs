@@ -102,7 +102,7 @@ LineTerminatorSequence "end of line"
   / "\u2029"
 
 Identifier
-  = !ReservedWord name:IdentifierName { return name; }
+  = !CommonReservedWord name:IdentifierName { return name; }
 
 IdentifierName "identifier"
   = first:IdentifierStart rest:IdentifierPart* {
@@ -121,44 +121,13 @@ IdentifierPart
   / "\u200C"
   / "\u200D"
 
-ReservedWord
-  = Keyword
-  / FutureReservedWord
+CommonReservedWord
+  = DefaultToken
+  / NewToken
+  / ThisToken
+  / ClassToken
   / NullLiteral
   / BooleanLiteral
-
-Keyword
-  = BreakToken
-  / CaseToken
-  / ContinueToken
-  / DebuggerToken
-  / DefaultToken
-  / DoToken
-  / ElseToken
-  / ForToken
-  / FunctionToken
-  / IfToken
-  / InstanceofToken
-  / InToken
-  / NewToken
-  / ReturnToken
-  / SwitchToken
-  / ThisToken
-  / TryToken
-  / TypeofToken
-  / VarToken
-  / VoidToken
-  / WhileToken
-  / WithToken
-
-FutureReservedWord
-  = ClassToken
-  / ConstToken
-  / EnumToken
-  / ExportToken
-  / ExtendsToken
-  / ImportToken
-  / SuperToken
 
 Literal
   = NullLiteral
