@@ -66,7 +66,7 @@ UppercaseLetter = [A-Z]
 Digit = [0-9]
 
 Identifier
-  = !CommonReservedWord name:IdentifierName { return name; }
+  = name:IdentifierName { return name; }
 
 IdentifierName "identifier"
   = first:IdentifierStart rest:IdentifierPart* {
@@ -86,10 +86,6 @@ IdentifierPart
   = IdentifierStart
   / Digit
 
-CommonReservedWord
-  = ThisToken
-  / NullLiteral
-  / BooleanLiteral
 
 Literal
   = NullLiteral
@@ -150,7 +146,6 @@ SingleStringCharacter
 FalseToken      = "false"      !IdentifierPart
 InToken         = "in"         !IdentifierPart
 NullToken       = "null"       !IdentifierPart
-ThisToken       = "this"       !IdentifierPart
 TrueToken       = "true"       !IdentifierPart
 
 /* Skipped */
@@ -161,8 +156,7 @@ _
 /* ----- A.2 Expressions ----- */
 
 PrimaryExpression
-  = ThisToken { return { type: "ThisExpression" }; }
-  / Identifier
+  = Identifier
   / Literal
   / "(" _ expression:Expression _ ")" { return expression; }
 
