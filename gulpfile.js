@@ -12,14 +12,18 @@ function requireUncached(module) {
 	return require(module);
 }
 
-var Path = {
-	input: 'js.pegjs',
-	output: 'js.js'
+var Folder = {
+	src: 'src/',
+	dest: 'dist/'
 };
 
-gulp.task('peg', ['clean'], function() {
+var Path = {
+	input: Folder.src + 'js_expr.pegjs',
+	output: Folder.dest + 'js_expr.js'
+};
+
+gulp.task('build', ['clean'], function() {
 	var pegOpts = {
-		// exportVar: 'nd.exprParser',
 		optimize: 'size'
 	};
 	return gulp.src(Path.input)
@@ -28,32 +32,32 @@ gulp.task('peg', ['clean'], function() {
 		.pipe(size({ title: 'non-minified' }))
 		.pipe(uglify())
 		.pipe(size({ title: 'minified' }))
-		.pipe(gulp.dest('.'));
+		.pipe(gulp.dest(Folder.dest));
 });
 
 gulp.task('clean', function(cb) {
 	del(Path.output, cb);
 });
 
-gulp.task('watch', ['peg'], function() {
+gulp.task('watch', ['build'], function() {
 	watch(Path.input, { verbose: true }, function() {
-		gulp.run('peg');
+		gulp.run('build');
 	});
 });
 
-gulp.task('watch-test', ['peg'], function() {
+gulp.task('watch-test', ['build'], function() {
 	watch(Path.input, { verbose: true }, function() {
 		gulp.run('test');
 	});
 });
 
-gulp.task('default', ['peg']);
+gulp.task('default', ['build']);
 
-gulp.task('peg-test', ['peg'], function() {
+gulp.task('build-test', ['build'], function() {
 	gulp.run('test');
 });
 
-gulp.task('test', ['peg'], function(cb) {
+gulp.task('test', ['build'], function(cb) {
 	var fs = require('fs'), filepath = 'test/sample_code.js';
 	fs.readFile(filepath, 'utf8', function(err, testCode) {
 		if (err) throw err;

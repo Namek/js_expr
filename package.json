@@ -1,8 +1,8 @@
 {
-  "name": "peg_js_expr",
-  "version": "1.0.0",
+  "name": "js_expr",
+  "version": "0.1.0",
   "description": "",
-  "main": "js.js",
+  "main": "dist/js_expr.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
