@@ -66,7 +66,7 @@ UppercaseLetter = [A-Z]
 Digit = [0-9]
 
 Identifier
-  = name:IdentifierName { return name; }
+  = !CommonReservedWord name:IdentifierName { return name; }
 
 IdentifierName "identifier"
   = first:IdentifierStart rest:IdentifierPart* {
@@ -86,6 +86,9 @@ IdentifierPart
   = IdentifierStart
   / Digit
 
+CommonReservedWord
+  = NullLiteral
+  / BooleanLiteral
 
 Literal
   = NullLiteral
