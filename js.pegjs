@@ -198,9 +198,9 @@ MultiplicativeExpression
     { return buildBinaryExpression(first, rest); }
 
 MultiplicativeOperator
-  = $("*" !"=")
-  / $("/" !"=")
-  / $("%" !"=")
+  = $("*")
+  / $("/")
+  / $("%")
 
 AdditiveExpression
   = first:MultiplicativeExpression
@@ -208,8 +208,8 @@ AdditiveExpression
     { return buildBinaryExpression(first, rest); }
 
 AdditiveOperator
-  = $("+" ![+=])
-  / $("-" ![-=])
+  = $("+")
+  / $("-")
 
 RelationalExpression
   = first:AdditiveExpression
@@ -219,8 +219,8 @@ RelationalExpression
 RelationalOperator
   = "<="
   / ">="
-  / $("<" !"<")
-  / $(">" !">")
+  / $("<")
+  / $(">")
   / $InToken
 
 EqualityExpression
