@@ -1,1 +1,1 @@
-page != null && page.name=="omg" ? 0 : 1
+(page != null || this.page != null) && page.name=="omg" ? 0 : 1
