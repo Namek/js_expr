@@ -57,6 +57,8 @@ gulp.task('test', ['peg'], function(cb) {
 	var fs = require('fs'), filepath = 'test/sample_code.js';
 	fs.readFile(filepath, 'utf8', function(err, testCode) {
 		if (err) throw err;
+
+		testCode = testCode.trim();
 		gutil.log("input - test code:\n\n" + testCode + "\n");
 
 		var parser = requireUncached('./js.js');
