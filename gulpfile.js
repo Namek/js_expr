@@ -57,7 +57,7 @@ gulp.task('build-test', ['build'], function() {
 	gulp.run('test');
 });
 
-gulp.task('test', ['build'], function(cb) {
+gulp.task('test', function(cb) {
 	var fs = require('fs'), filepath = 'test/sample_code.js';
 	fs.readFile(filepath, 'utf8', function(err, testCode) {
 		if (err) throw err;
@@ -65,7 +65,7 @@ gulp.task('test', ['build'], function(cb) {
 		testCode = testCode.trim();
 		gutil.log("input - test code:\n\n" + testCode + "\n");
 
-		var parser = requireUncached('./js.js');
+		var parser = requireUncached('./' + Path.output);
 		gutil.log("output - Abstract Syntax Tree:\n\n" + JSON.stringify(parser.parse(testCode), null, 4));
 
 		cb();
